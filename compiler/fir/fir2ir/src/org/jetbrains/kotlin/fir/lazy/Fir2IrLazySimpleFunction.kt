@@ -25,6 +25,8 @@ import org.jetbrains.kotlin.ir.util.transformIfNeeded
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.serialization.deserialization.descriptors.DescriptorWithContainerSource
+import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedContainerSource
 
 class Fir2IrLazySimpleFunction(
     components: Fir2IrComponents,
@@ -140,6 +142,10 @@ class Fir2IrLazySimpleFunction(
         set(_) = error("We should never need to store metadata of external declarations.")
 
     override val originalDeclaration: IrFunction get() = this
+
+    @ObsoleteDescriptorBasedAPI
+    override val containerSource: DeserializedContainerSource?
+        get() = (descriptor as? DescriptorWithContainerSource)?.containerSource
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitSimpleFunction(this, data)
